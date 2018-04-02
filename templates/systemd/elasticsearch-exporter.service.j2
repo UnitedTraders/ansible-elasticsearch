@@ -3,7 +3,7 @@ Description=Prometheus exporter for Postgresql (https://github.com/justwatchcom/
 
 [Service]
 WorkingDirectory={{ es_exporter_dir }}
-ExecStart={{ es_exporter_dir }}/elasticsearch_exporter_{{ es_exporter_version }}.linux-amd64/elasticsearch_exporter {{ es_exporter_start_flags }}
+ExecStart={{ es_exporter_dir }}/elasticsearch_exporter-{{ es_exporter_version }}.linux-amd64/elasticsearch_exporter {{ es_exporter_start_flags }}
 User={{ es_exporter_user }}
 
 [Install]
