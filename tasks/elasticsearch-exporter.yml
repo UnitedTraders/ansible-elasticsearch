@@ -1,0 +1,40 @@
+---
+- name: create user for exporter
+  user: name='{{ es_exporter_user }}'
+
+- name: create directory for exporter
+  file: state=directory path={{ es_exporter_dir }} owner={{ es_exporter_user }} recurse=true
+
+- name: create service
+  template: src='systemd/elasticsearch-exporter.service.j2' dest='/etc/systemd/system/elasticsearch-exporter.service'
+  notify: reload systemd configuration
+
+- meta: flush_handlers
+
+- name: download and unpack exporter
+  unarchive:
+    src: 'https://github.com/justwatchcom/elasticsearch_exporter/releases/download/v{{ es_exporter_version }}/elasticsearch_exporter-{{ es_exporter_version }}.linux-amd64.tar.gz'
+    dest: '{{ es_exporter_dir }}'
+    remote_src: yes
+    owner: '{{ es_exporter_user }}'
+  notify: restart elasticsearch-exporter
+
+- name: start service
+  service: name=elasticsearch-exporter state=started enabled=yes
+
+- name: Enable access to exporters
+  firewalld:
+    rich_rule='rule family="ipv4" source address="{{ hostvars[item]['ansible_ssh_host'] }}/32" port port="{{ es_exporter_port }}" protocol="tcp" accept'
+    permanent=true
+    state=enabled
+    zone=public
+    immediate=true
+  with_items: "{{ groups['prometheus'] }}"
+
+- name: create prometheus job file for metrics gathering
+  template: src=elasticsearch-prometheus_metrics.yaml.j2 dest=/etc/prometheus/hosts/elasticsearch-{{ ansible_fqdn }}-{{ deploy_env }}.yaml
+  delegate_to: "{{ item }}"
+  delegate_facts: True
+  when: has_metrics == true
+  notify: reload prometheus
+  with_items: "{{ groups.prometheus | default([]) }}"

@@ -1,0 +1,5 @@
+- targets:
+    - '{{ ansible_fqdn }}:{{ es_exporter_port }}'
+  labels:
+    job: elasticsearch
+    team: {{ es_exporter_team }}

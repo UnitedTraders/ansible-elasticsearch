@@ -71,3 +71,6 @@
   when: es_templates
   tags:
       - templates
+
+- include: elasticsearch-exporter.yml
+  tags: es_exporter

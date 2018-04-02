@@ -12,3 +12,16 @@
     - es_restart_on_change
     - es_start_service
   register: es_restarted
+
+- name: restart elasticsearch-exporter
+  service: name=elasticsearch-exporter state=restarted
+
+- name: reload prometheus
+  uri:
+    url: http://localhost:9090/-/reload
+    method: POST
+  listen: "reload prometheus"
+  delegate_to: "{{ item }}"
+  delegate_facts: True
+  with_items: "{{ groups.prometheus | default([]) }}"
+
