@@ -42,3 +42,10 @@ conf_dir: ''
 data_dirs: ''
 # JVM custom parameters
 es_jvm_custom_parameters: ''
+es_exporter_dir: "/opt/elasticsearch_exporter"
+es_exporter_version: "1.0.2"
+es_exporter_start_flags: " -es.all -es.indices"
+es_exporter_user: "esexporter"
+es_exporter_port: "9108"
+es_exporter_team: "luna"
+
