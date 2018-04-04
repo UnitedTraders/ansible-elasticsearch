@@ -1,0 +1,10 @@
+[Unit]
+Description=Prometheus exporter for Postgresql (https://github.com/justwatchcom/elasticsearch_exporter)
+
+[Service]
+WorkingDirectory={{ es_exporter_dir }}
+ExecStart={{ es_exporter_dir }}/elasticsearch_exporter-{{ es_exporter_version }}.linux-amd64/elasticsearch_exporter {{ es_exporter_start_flags }}
+User={{ es_exporter_user }}
+
+[Install]
+WantedBy=multi-user.target
